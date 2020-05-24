@@ -53,3 +53,12 @@ def device():
     '''
     return 'cuda' if torch.cuda.is_available() else 'cpu'
 
+
+def count_model_parameters(model):
+
+    ''' Count of parameters which can be trained in the model defination '''
+
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
+
