@@ -162,10 +162,10 @@ def fit_attention(epoch, dataloader, model, optimizer, pbar, save_every = None, 
         else:
             if epoch % save_every == 0:
 
-                save_path = os.path.join(save_path, f'training_epoch_{epoch}.pt')
+                save_path_ = os.path.join(save_path, f'training_epoch_{epoch}.pt')
                 save_path_dict = os.path.join(save_path, f'training_epoch_{epoch}_state_dict.pth')
 
-                torch.save(model, save_path)
+                torch.save(model, save_path_)
 
                 torch.save({
                     'epoch': epoch,
