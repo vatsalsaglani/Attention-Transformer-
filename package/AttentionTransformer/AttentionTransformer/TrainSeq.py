@@ -114,14 +114,23 @@ def fit_attention(epoch, dataloader, model, target_pad_id, optimizer, pbar, save
                 save_path_dict = os.path.join(save_path, f'training_epoch_{epoch}_state_dict.pth')
 
                 torch.save(model, save_path_)
+                if isScheduled:
+                    torch.save({
+                        'epoch': epoch,
+                        'model_state_dict': model.state_dict(),
+                        'optimizer_state_dict': optimizer.get_optimizer_state_dict(),
+                        'loss': loss_per_label,
+                        'accuracy': accuracy
+                    }, save_path_dict)
+                else:
 
-                torch.save({
-                    'epoch': epoch,
-                    'model_state_dict': model.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': loss_per_label,
-                    'accuracy': accuracy
-                }, save_path_dict)
+                    torch.save({
+                        'epoch': epoch,
+                        'model_state_dict': model.state_dict(),
+                        'optimizer_state_dict': optimizer.state_dict(),
+                        'loss': loss_per_label,
+                        'accuracy': accuracy
+                    }, save_path_dict)
 
 
     pbar.write(t)

@@ -7,6 +7,7 @@ class ScheduledOptimizer():
         self.dim_model = dim_model
         self.n_warmup_steps = n_warmup_steps
         self.n_steps = 0
+        self.state_dict = self.get_optimizer_state_dict()
         
 
     def step_and_update_lr(self):
