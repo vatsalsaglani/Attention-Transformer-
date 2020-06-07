@@ -36,7 +36,6 @@ class ClassificationTransformer(nn.Module):
 
     def get_subsequent_mask(self, sequence):
 
-        print(f'Trg Sub Seq: {sequence.size()}')
 
         batch_size, seq_length = sequence.size()
 
