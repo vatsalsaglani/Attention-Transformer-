@@ -50,8 +50,8 @@ class ClassificationTransformer(nn.Module):
 
     def forward(self, source_seq, target_seq):
 
-        source_seq = self.get_pad_mask(source_seq, self.pad_id)
-        target_seq = self.get_pad_mask(target_seq, self.pad_id) & self.get_subsequent_mask(target_seq)
+        source_mask = self.get_pad_mask(source_seq, self.pad_id)
+        target_mask = self.get_pad_mask(target_seq, self.pad_id) & self.get_subsequent_mask(target_seq)
 
         encoder_output = self.encoder(source_seq, source_mask)
         decoder_output = self.decoder(target_seq, target_mask, encoder_output, source_mask)
