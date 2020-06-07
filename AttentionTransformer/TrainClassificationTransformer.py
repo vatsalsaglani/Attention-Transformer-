@@ -76,7 +76,7 @@ def fit_classification(epoch, dataloader, model, pad_id, optimizer, pbar, save_e
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': loss_per_item,
             'acc': accuracy
-        })
+        }, save_path_dict)
 
     pbar.write(t)
     pbar.update(1)
