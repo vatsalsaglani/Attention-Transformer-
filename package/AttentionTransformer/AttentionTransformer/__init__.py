@@ -11,4 +11,8 @@ from .utilities import *
 from .TrainSeq import *
 from .ScheduledOptimizer import *
 from .SeqSeqDataset import *
-# from .Activations import *
+# from .ClassificationTransformer import *
+from .Activations import *
+from .ClassificationDataset import *
+from .ClassificationTransformer import *
+from .TrainClassificationTransformer import *

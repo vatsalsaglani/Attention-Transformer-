@@ -1,7 +1,7 @@
 import torch 
 import torch.nn as nn
 import torch.nn.functional as F
-from Activations import activation_dict
+from .Activations import activation_dict
 
 
 class PositionWiseFeedForward(nn.Module):

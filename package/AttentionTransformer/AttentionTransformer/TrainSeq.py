@@ -58,7 +58,7 @@ def patch_trg(trg):
 
 
 
-def fit_attention(epoch, dataloader, model, target_pad_id, optimizer, pbar, save_every = None, save_path = None, phase = 'training', isScheduled = False):
+def fit_attention(epoch, dataloader, model, target_pad_id, optimizer, pbar, save_every = None, save_path = None, phase = 'training', isScheduled = False, clip = 2):
 
     if phase == 'training':
         model.train()
@@ -85,9 +85,11 @@ def fit_attention(epoch, dataloader, model, target_pad_id, optimizer, pbar, save
             
             if isScheduled:
                 loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
                 optimizer.step_and_update_lr()
             else:
                 loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
                 optimizer.step()
 
         n_label_total += n_label
@@ -107,6 +109,8 @@ def fit_attention(epoch, dataloader, model, target_pad_id, optimizer, pbar, save
     if save_every:
         if not save_path:
             return f"If you want to save after every {save_every} please provide a `save_path` to store the model"
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
         else:
             if epoch % save_every == 0:
 
