@@ -80,6 +80,7 @@ def fit_classification(epoch, dataloader, model, pad_id, optimizer, pbar, save_e
 
     pbar.write(t)
     pbar.update(1)
+    return loss_per_item, accuracy, t
 
 
 
