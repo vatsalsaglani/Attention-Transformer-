@@ -35,7 +35,7 @@ class SeqSeqDataset(Dataset):
         
         op[:arr.size(0)] = arr
 
-        return op.long()
+        return op.float()
 
     
     def __len__(self):

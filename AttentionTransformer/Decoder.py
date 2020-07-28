@@ -31,7 +31,9 @@ class Decoder(nn.Module):
         decoder_self_attention_list = []
         decoder_encoder_attention_list = []
 
-        decoder_output = self.dropout(self.position_encoding(self.word_embedding(target_seq)))
+        decoder_output = self.dropout(self.position_encoding(self.word_embedding(target_seq.long())))
+
+        decoder_output = decoder_output.float()
 
         for decoder_layer in self.layer_stack:
 

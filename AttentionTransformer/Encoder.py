@@ -30,7 +30,11 @@ class Encoder(nn.Module):
 
         encoder_self_attention_list = []
 
-        encoder_output = self.dropout(self.position_encoding(self.word_embedding(source_seq)))
+        
+
+        encoder_output = self.dropout(self.position_encoding(self.word_embedding(source_seq.long())))
+
+        encoder_output = encoder_output.float()
 
         for encoder_layer in self.layer_stack:
 

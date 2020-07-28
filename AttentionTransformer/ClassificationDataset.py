@@ -80,6 +80,6 @@ class ClassificationDataset(Dataset):
             else:
                 target = self.empty_like(self.num)
 
-        return {"src": text.long(), "label": torch.tensor(label), "trg": target.long()}
+        return {"src": text.float(), "label": torch.tensor(label), "trg": target.float()}
 
 

@@ -21,6 +21,7 @@ class ClassificationTransformer(nn.Module):
             vocab_size, emb_dim, layers, heads, dim_key, dim_value, dim_model, dim_inner, pad_id, dropout = dropout, num_pos = num_pos
         )
 
+
         self.target_word_projection = nn.Linear(dim_model, vocab_size, bias=False)
 
         self.num_classes = num_classes

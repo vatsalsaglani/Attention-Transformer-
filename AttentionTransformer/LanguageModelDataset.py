@@ -19,8 +19,8 @@ class LanguageModelDataset(Dataset):
 
     def __getitem__(self, ix):
 
-        inp_seq = torch.LongTensor(self.data_array[ix:ix+self.seq_length])
-        op_seq = torch.LongTensor(self.data_array[ix+1:ix+self.seq_length+1])
+        inp_seq = torch.FloatTensor(self.data_array[ix:ix+self.seq_length])
+        op_seq = torch.FloatTensor(self.data_array[ix+1:ix+self.seq_length+1])
 
         return {'src': inp_seq, 'trg': op_seq}
 
