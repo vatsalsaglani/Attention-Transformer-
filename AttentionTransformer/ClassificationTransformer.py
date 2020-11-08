@@ -57,7 +57,7 @@ class ClassificationTransformer(nn.Module):
 
     def make_target_seq(self, batch_size):
 
-        trg_tnsr = torch.zeros((bz, 1))
+        trg_tnsr = torch.zeros((batch_size, 1))
         trg_tnsr[trg_tnsr == 0] = self.cls_label_id
         return trg_tnsr
 
