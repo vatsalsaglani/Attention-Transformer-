@@ -5,13 +5,17 @@ import torch.nn.functional as F
 from .Encoder import Encoder
 from .Decoder import Decoder
 
+
 class ClassificationTransformer(nn.Module):
 
-    def __init__(self, vocab_size, num_classes, seq_len, pad_id, emb_dim = 512, dim_model = 512, dim_inner = 2048, layers = 6, heads = 8, dim_key = 64, dim_value = 64, dropout = 0.1, num_pos = 200):
+    def __init__(
+        self, vocab_size, pad_id, CLS_label_id, num_classes, emb_dim = 512, dim_model = 512, dim_inner = 2048,
+        layers = 6, heads = 8, dim_key = 64, dim_value = 64, dropout = 0.1, num_pos = 200
+    ):
 
         super(ClassificationTransformer, self).__init__()
 
-        self.pad_id = pad_id
+        self.pad_id = pad_id 
 
         self.encoder = Encoder(
             vocab_size, emb_dim, layers, heads, dim_key, dim_value, dim_model, dim_inner, pad_id, dropout = dropout, num_pos = num_pos
@@ -21,15 +25,19 @@ class ClassificationTransformer(nn.Module):
             vocab_size, emb_dim, layers, heads, dim_key, dim_value, dim_model, dim_inner, pad_id, dropout = dropout, num_pos = num_pos
         )
 
+        self.target_word_projection = nn.Linear(dim_model, num_classes, bias = False)
 
-        self.target_word_projection = nn.Linear(dim_model, vocab_size, bias=False)
+        for parameter in self.parameters():
 
-        self.num_classes = num_classes
+            if parameter.dim() > 1:
 
-        self.classification_layer = nn.Linear(vocab_size * seq_len, num_classes, bias=False)
+                nn.init.xavier_uniform_(parameter)
+
+        assert dim_model == emb_dim, f'Dimensions of all the moduel outputs must be the same'
 
         self.x_logit_scale = 1
 
+        self.cls_label_id = CLS_label_id
 
     def get_pad_mask(self, sequence, pad_id):
 
@@ -37,8 +45,7 @@ class ClassificationTransformer(nn.Module):
 
     def get_subsequent_mask(self, sequence):
 
-
-        batch_size, seq_length = sequence.size()
+        batch_size, seq_length = sequence.size() 
 
         subsequent_mask = (
             1 - torch.triu(
@@ -48,7 +55,17 @@ class ClassificationTransformer(nn.Module):
 
         return subsequent_mask
 
-    def forward(self, source_seq, target_seq):
+    def make_target_seq(self, batch_size):
+
+        trg_tnsr = torch.zeros((bz, 1))
+        trg_tnsr[trg_tnsr == 0] = self.cls_label_id
+        return trg_tnsr
+
+    def forward(self, source_seq):
+
+        b, l = source_seq.size()
+
+        target_seq = self.make_target_seq(b)
 
         source_mask = self.get_pad_mask(source_seq, self.pad_id)
         target_mask = self.get_pad_mask(target_seq, self.pad_id) & self.get_subsequent_mask(target_seq)
@@ -56,10 +73,9 @@ class ClassificationTransformer(nn.Module):
         encoder_output = self.encoder(source_seq, source_mask)
         decoder_output = self.decoder(target_seq, target_mask, encoder_output, source_mask)
 
-        seq_logit = self.target_word_projection(decoder_output) * self.x_logit_scale
+        decoder_output = decoder_output.view(decoder_output.size(0), -1)
 
-        seq_logit = seq_logit.view(seq_logit.size(0), -1) # [batch_size, seq_len * vocab_size]
+        seq_logits = self.target_word_projection(decoder_output)
 
-        classes = self.classification_layer(seq_logit)
+        return seq_logits
 
-        return classes
